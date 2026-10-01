@@ -249,9 +249,9 @@ Full, live logs: **[Actions → CI & Deploy to GitHub Pages](https://github.com/
 |---|---|---|---|---|
 | 2026-10-01 14:15 | [`5228c9a`](https://github.com/chysreax/personal-finance/commit/5228c9ac9ab1892697cbf972e2e4f65a22ce0c2d) initial release | [#36874877565](https://github.com/chysreax/personal-finance/actions/runs/36874877565) | lint & test & build 10 s · deploy 10 s · smoke 5 s | ✅ success. A manual browser audit then found one console error: Trusted Types (`trusted-types 'none'`) blocked `serviceWorker.register()` |
 | 2026-10-01 14:17 | [`0987b91`](https://github.com/chysreax/personal-finance/commit/0987b91) `fix(csp)`: scoped Trusted Types policy `pfm-sw` | [#36875121200](https://github.com/chysreax/personal-finance/actions/runs/36875121200) | lint & test & build · deploy · smoke | ✅ success. Re-audit showed browsers still running the **cached** old `main.js` (Pages `max-age=600`) |
-| 2026-10-01 | `fix(build)`: versioned module graph (`?v=<build>`) | see Actions | lint & test & build · deploy · smoke | see Actions |
+| 2026-10-01 14:20 | [`db56940`](https://github.com/chysreax/personal-finance/commit/db56940) `fix(build)`: versioned module graph (`?v=<build>`) | [#36875436945](https://github.com/chysreax/personal-finance/actions/runs/36875436945) | lint & test & build · deploy · smoke | ✅ success. Live audit: service worker **active** (cache `ledgerly-20261001-db56940`), 39 versioned modules, **0 failed requests, 0 console messages**; vault creation and all 8 views verified end to end |
 
-Post-deploy verification of the live site (Chromium): 41 resources, 0 failures, 38 modules fetched in parallel via `modulepreload`, first contentful paint ≈ 1.4 s on a cold CDN cache.
+Post-deploy verification of the live site (Chromium): 41 resources, 0 failures, 38 modules fetched in parallel via `modulepreload`. First contentful paint was ≈ 1.4 s on a cold CDN cache and ≈ 0.2 s from the local build.
 
 ---
 
