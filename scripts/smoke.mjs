@@ -40,7 +40,7 @@ await Promise.all(
     const url = new URL(ref, base).href;
     const res = await get(url).catch(() => null);
     if (!res || !res.ok) return failures.push(`${ref} → ${res ? `HTTP ${res.status}` : 'network error'}`);
-    const ext = (ref.match(/\.[a-z]+$/) || [''])[0];
+    const ext = (ref.split('?')[0].match(/\.[a-z]+$/) || [''])[0];
     const type = res.headers.get('content-type') || '';
     if (EXPECT[ext] && !EXPECT[ext].test(type)) failures.push(`${ref} → unexpected content-type ${type}`);
     else ok++;

@@ -233,7 +233,7 @@ npm run build        # → dist/ with modulepreload graph + build-stamped servic
 node scripts/smoke.mjs https://chysreax.github.io/personal-finance/
 ```
 
-The app uses **no npm dependencies**: ES modules are served as-is, and the build step only copies files, stamps the build id and injects `<link rel="modulepreload">` for the whole module graph, so the browser fetches every module in parallel without a waterfall.
+The app uses **no npm dependencies**: ES modules are served as-is. The build step copies files, stamps the build id into the service-worker cache name, injects `<link rel="modulepreload">` for the whole module graph (the browser fetches every module in parallel, without a waterfall), and **cache-busts every module import, stylesheet and precache entry with `?v=<build>`**. GitHub Pages serves assets with `max-age=600`, so without this a fresh `index.html` could run stale modules for up to 10 minutes after a deploy.
 
 **CI/CD** (`.github/workflows/deploy.yml`) runs on every push to `main`:
 1. `npm run check`, which checks that imports resolve, the precache list matches disk, the CSP is complete, and there are no HTML sinks, `eval` or `console` calls.
@@ -248,7 +248,8 @@ Full, live logs: **[Actions → CI & Deploy to GitHub Pages](https://github.com/
 | Date (UTC) | Commit | Pipeline run | Jobs | Result |
 |---|---|---|---|---|
 | 2026-10-01 14:15 | [`5228c9a`](https://github.com/chysreax/personal-finance/commit/5228c9ac9ab1892697cbf972e2e4f65a22ce0c2d) initial release | [#36874877565](https://github.com/chysreax/personal-finance/actions/runs/36874877565) | lint & test & build 10 s · deploy 10 s · smoke 5 s | ✅ success. A manual browser audit then found one console error: Trusted Types (`trusted-types 'none'`) blocked `serviceWorker.register()` |
-| 2026-10-01 | `fix(csp)` scoped Trusted Types policy `pfm-sw` | see Actions | lint & test & build · deploy · smoke | see below |
+| 2026-10-01 14:17 | [`0987b91`](https://github.com/chysreax/personal-finance/commit/0987b91) `fix(csp)`: scoped Trusted Types policy `pfm-sw` | [#36875121200](https://github.com/chysreax/personal-finance/actions/runs/36875121200) | lint & test & build · deploy · smoke | ✅ success. Re-audit showed browsers still running the **cached** old `main.js` (Pages `max-age=600`) |
+| 2026-10-01 | `fix(build)`: versioned module graph (`?v=<build>`) | see Actions | lint & test & build · deploy · smoke | see Actions |
 
 Post-deploy verification of the live site (Chromium): 41 resources, 0 failures, 38 modules fetched in parallel via `modulepreload`, first contentful paint ≈ 1.4 s on a cold CDN cache.
 

@@ -21,18 +21,29 @@ for (const f of files.sort()) hash.update(relative(out, f)).update(readFileSync(
 const sha = (process.env.GITHUB_SHA || '').slice(0, 7);
 const build = `${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${sha || hash.digest('hex').slice(0, 7)}`;
 
-const swPath = join(out, 'sw.js');
-writeFileSync(swPath, readFileSync(swPath, 'utf8').replace("'__BUILD__'", `'${build}'`));
-const mainPath = join(out, 'js', 'main.js');
-writeFileSync(mainPath, readFileSync(mainPath, 'utf8').replace("'__BUILD__'", `'${build}'`));
+// Cache-busting: GitHub Pages serves assets with max-age=600, so without
+// versioned URLs a fresh index.html could run stale modules for ~10 minutes.
+// Every relative import, stylesheet, script and precache entry gets ?v=<build>.
+const v = `?v=${build}`;
+const edit = (path, fn) => writeFileSync(path, fn(readFileSync(path, 'utf8')));
+
+for (const f of walk(join(out, 'js')).filter((p) => p.endsWith('.js'))) {
+  edit(f, (src) => src.replace(/((?:import|export)\s[^'"]*?from\s+['"])(\.{1,2}\/[^'"?]+\.js)(['"])/g, `$1$2${v}$3`).replace("'__BUILD__'", `'${build}'`));
+}
+edit(join(out, 'sw.js'), (src) =>
+  src.replace("'__BUILD__'", `'${build}'`).replace(/'(\.\/(?:js|css)\/[^']+\.(?:js|css))'/g, `'$1${v}'`),
+);
 
 const modules = walk(join(out, 'js'))
   .filter((f) => f.endsWith('.js') && !f.endsWith('theme-init.js'))
   .map((f) => relative(out, f).split(sep).join('/'))
   .sort();
-const preload = modules.map((m) => `<link rel="modulepreload" href="${m}">`).join('\n  ');
-const htmlPath = join(out, 'index.html');
-writeFileSync(htmlPath, readFileSync(htmlPath, 'utf8').replace('<!--modulepreload-->', preload));
+const preload = modules.map((m) => `<link rel="modulepreload" href="${m}${v}">`).join('\n  ');
+edit(join(out, 'index.html'), (html) =>
+  html
+    .replace(/((?:href|src)=")((?:js|css)\/[^"?]+\.(?:js|css))"/g, `$1$2${v}"`)
+    .replace('<!--modulepreload-->', preload),
+);
 
 const bytes = files.reduce((s, f) => s + statSync(f).size, 0);
 process.stdout.write(`✓ built dist/ — build ${build}, ${files.length} files, ${(bytes / 1024).toFixed(1)} KB, ${modules.length} modules preloaded\n`);
