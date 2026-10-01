@@ -158,7 +158,7 @@ Opening a vault verifies, in order: **structure** → **key-check** (wrong passp
 
 ### 4. XSS & injection prevention
 - **Safe DOM bindings:** all markup is created by `js/ui/dom.js`. Text always becomes Text nodes; `innerHTML`/`outerHTML`/`srcdoc` throw; `on*` attributes are refused (handlers are bound as functions); `href`/`src` accept only `#…` or `https:` URLs.
-- **Trusted Types enforced with zero policies** (`require-trusted-types-for 'script'; trusted-types 'none'`), so any string reaching an HTML sink throws at runtime.
+- **Trusted Types enforced** (`require-trusted-types-for 'script'; trusted-types pfm-sw`). The only policy permitted can mint exactly one value, the service-worker URL `./sw.js`. No HTML policy exists, so any string reaching `innerHTML` or a similar sink throws at runtime.
 - **Strict CSP meta tag:** `default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://api.github.com https://gist.githubusercontent.com; object-src 'none'; base-uri 'none'; form-action 'none'; …` There are no inline scripts or styles (styling goes through the CSSOM), and `connect-src` blocks exfiltration to any other host.
 - **Schema sanitiser** on every untrusted input (remote, JSON import, CSV, local cache): type checks, id/date/amount validation, length caps, record-count caps, stripping of control and bidi-override characters, and referential repair.
 - **CSV formula-injection** protection on export (`=`, `+`, `-`, `@` cells are prefixed). Auto-categorization rules use substring matching only, so user-supplied regular expressions cannot cause ReDoS.
@@ -243,9 +243,14 @@ The app uses **no npm dependencies**: ES modules are served as-is, and the build
 
 ## Deployment log
 
-| Date (UTC) | Commit | Pipeline | Result |
-|---|---|---|---|
-| _pending first deploy_ | | | |
+Full, live logs: **[Actions → CI & Deploy to GitHub Pages](https://github.com/chysreax/personal-finance/actions/workflows/deploy.yml)**
+
+| Date (UTC) | Commit | Pipeline run | Jobs | Result |
+|---|---|---|---|---|
+| 2026-10-01 14:15 | [`5228c9a`](https://github.com/chysreax/personal-finance/commit/5228c9ac9ab1892697cbf972e2e4f65a22ce0c2d) initial release | [#36874877565](https://github.com/chysreax/personal-finance/actions/runs/36874877565) | lint & test & build 10 s · deploy 10 s · smoke 5 s | ✅ success. A manual browser audit then found one console error: Trusted Types (`trusted-types 'none'`) blocked `serviceWorker.register()` |
+| 2026-10-01 | `fix(csp)` scoped Trusted Types policy `pfm-sw` | see Actions | lint & test & build · deploy · smoke | see below |
+
+Post-deploy verification of the live site (Chromium): 41 resources, 0 failures, 38 modules fetched in parallel via `modulepreload`, first contentful paint ≈ 1.4 s on a cold CDN cache.
 
 ---
 

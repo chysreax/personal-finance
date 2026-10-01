@@ -5,8 +5,8 @@
  *   • inline event-handler attributes (on*) are refused — handlers are bound
  *     as functions via addEventListener;
  *   • href/src only accept same-document fragments or https URLs.
- * The CSP additionally enforces Trusted Types with no policies, so any string
- * reaching an HTML sink would throw at runtime.
+ * The CSP additionally enforces Trusted Types with no HTML policy, so any
+ * string reaching an HTML sink would throw at runtime.
  */
 
 const SVG_NS = 'http://www.w3.org/2000/svg';

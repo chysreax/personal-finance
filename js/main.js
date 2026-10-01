@@ -351,8 +351,16 @@ applyTheme(storage.readMeta().theme);
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   let updateRequested = false;
+  // Trusted Types treats a worker URL as a script sink. The only policy the CSP
+  // allows ("pfm-sw") can mint exactly one value — no HTML policy exists at all.
+  const ttPolicy = window.trustedTypes?.createPolicy('pfm-sw', {
+    createScriptURL: (url) => {
+      if (url !== './sw.js') throw new TypeError('Blocked script URL');
+      return url;
+    },
+  });
   navigator.serviceWorker
-    .register('./sw.js', { scope: './' })
+    .register(ttPolicy ? ttPolicy.createScriptURL('./sw.js') : './sw.js', { scope: './' })
     .then((reg) => {
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing;
