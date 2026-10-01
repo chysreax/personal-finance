@@ -1,0 +1,13 @@
+{
+  "name": "Ledgerly — Personal Finance",
+  "short_name": "Ledgerly",
+  "description": "Private, end-to-end encrypted personal finance manager synced via your own GitHub Gist.",
+  "start_url": "./#/dashboard",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c111b",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

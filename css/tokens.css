@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Design tokens — one source for color, type, space, radius, motion.
+   Light is the default; [data-theme="dark"] is set before first paint by
+   js/theme-init.js (system preference or explicit choice).
+   Series palette: validated categorical order (CVD-safe adjacent pairs),
+   stepped separately for each surface.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  /* surfaces */
+  --bg: #f5f6fa;
+  --bg-grad: radial-gradient(1200px 600px at 100% -10%, #e9e8ff 0%, transparent 60%), radial-gradient(900px 500px at -10% 110%, #e2f6ee 0%, transparent 55%);
+  --surface: #ffffff;
+  --surface-2: #f3f4f8;
+  --surface-3: #eceef4;
+  --border: #e4e6ee;
+  --border-strong: #d3d6e2;
+  --overlay: rgba(15, 18, 30, 0.42);
+
+  /* ink */
+  --text: #0f1220;
+  --text-2: #4a4f63;
+  --muted: #6b7086;
+  --faint: #9a9fb3;
+
+  /* brand & status */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-ink: #ffffff;
+  --primary-soft: #eef0ff;
+  --primary-ring: rgba(79, 70, 229, 0.28);
+  --pos: #047857;
+  --pos-soft: #e6f6ef;
+  --neg: #c81e4b;
+  --neg-soft: #fdecf0;
+  --warn: #b45309;
+  --warn-soft: #fff4e2;
+  --info: #0369a1;
+  --info-soft: #e6f3fb;
+
+  /* chart chrome */
+  --grid: #e8e9ef;
+  --axis: #c9ccd8;
+  --axis-text: #7c8196;
+
+  /* categorical series (light) */
+  --s0: #2a78d6;
+  --s1: #eb6834;
+  --s2: #1baf7a;
+  --s3: #eda100;
+  --s4: #e87ba4;
+  --s5: #008300;
+  --s6: #4a3aa7;
+  --s7: #e34948;
+  --s-other: #a3a7b7;
+
+  /* type */
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-md: 0.9375rem;
+  --fs-lg: 1.0625rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2.25rem;
+
+  /* space (4px grid) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+
+  /* shape & depth */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+  --shadow-1: 0 1px 2px rgba(16, 20, 40, 0.05), 0 1px 1px rgba(16, 20, 40, 0.03);
+  --shadow-2: 0 6px 24px -8px rgba(16, 20, 40, 0.14), 0 2px 6px rgba(16, 20, 40, 0.05);
+  --shadow-3: 0 24px 60px -16px rgba(16, 20, 40, 0.32);
+
+  /* motion */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 120ms;
+  --t-med: 220ms;
+  --t-slow: 520ms;
+
+  /* layout */
+  --sidebar-w: 248px;
+  --rail-w: 76px;
+  --topbar-h: 60px;
+  --bottom-h: 64px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c111b;
+  --bg-grad: radial-gradient(1200px 600px at 100% -10%, rgba(99, 102, 241, 0.16) 0%, transparent 60%), radial-gradient(900px 500px at -10% 110%, rgba(27, 175, 122, 0.10) 0%, transparent 55%);
+  --surface: #141a26;
+  --surface-2: #1a2130;
+  --surface-3: #212a3b;
+  --border: #252e40;
+  --border-strong: #334055;
+  --overlay: rgba(2, 4, 10, 0.66);
+
+  --text: #eef0f7;
+  --text-2: #c2c7d6;
+  --muted: #949bb0;
+  --faint: #6b7288;
+
+  --primary: #8b8cf6;
+  --primary-hover: #a5a6fa;
+  --primary-ink: #0c0f1d;
+  --primary-soft: rgba(139, 140, 246, 0.14);
+  --primary-ring: rgba(139, 140, 246, 0.38);
+  --pos: #34d399;
+  --pos-soft: rgba(52, 211, 153, 0.12);
+  --neg: #fb7193;
+  --neg-soft: rgba(251, 113, 147, 0.12);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.12);
+  --info: #5ab8f0;
+  --info-soft: rgba(90, 184, 240, 0.12);
+
+  --grid: #232b3b;
+  --axis: #36405a;
+  --axis-text: #8a91a8;
+
+  --s0: #3987e5;
+  --s1: #d95926;
+  --s2: #199e70;
+  --s3: #c98500;
+  --s4: #d55181;
+  --s5: #008300;
+  --s6: #9085e9;
+  --s7: #e66767;
+  --s-other: #5d6478;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-3: 0 30px 70px -20px rgba(0, 0, 0, 0.75);
+}
